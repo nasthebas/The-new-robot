@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Game Bot for MakeCode</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #eee;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #log {
+            white-space: pre-wrap;
+            margin-top: 20px;
+            background-color: #222;
+            padding: 15px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Game Bot</h1>
+    <p>Tell me what kind of game you want to create!</p>
+    <button onclick="startListening()">Talk to Me</button>
+    <div id="log"></div>
+    <h2>MakeCode Arcade Simulator</h2>
+    <iframe src="https://arcade.makecode.com/" width="100%" height="600px" style="border: none;"></iframe>
+
+    <script>
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            log("You said: " + transcript);
+            const response = processChatInput(transcript);
+            log("Game Bot: " + response);
+        };
+
+        function startListening() {
+            recognition.start();
+        }
+
+        function log(text) {
+            document.getElementById("log").textContent += text + "\n";
+        }
+
+        function processChatInput(input) {
+            const chatInput = input.toLowerCase();
+            if (chatInput.includes("platformer")) {
+                return createPlatformerGame();
+            } else if (chatInput.includes("enemy")) {
+                return createEnemy(chatInput);
+            } else if (chatInput.includes("player")) {
+                return createPlayer(chatInput);
+            } else if (chatInput.includes("background")) {
+                return setBackground(chatInput);
+            } else if (chatInput.includes("coin") || chatInput.includes("collectible")) {
+                return addCollectible(chatInput);
+            } else {
+                return "I’m not sure what you want, little bro. Try saying something like 'make a platformer', 'add an enemy', or 'create a jungle background'.";
+            }
+        }
+
+        function createPlatformerGame() {
+            return `Building your platformer game:
+- Gravity: Enabled
+- Ground tiles: Set
+- Player: Spawned
+- Camera: Follows player
+You're good to go!`;
+        }
+
+        function createPlayer(input) {
+            const name = input.includes("name") ? extractName(input) : "Hero";
+            return `Creating player:
+- Name: ${name}
+- Type: Player
+- Controls: Enabled
+- Physics: Set for jumping and gravity`;
+        }
+
+        function createEnemy(input) {
+            const type = input.includes("flying") ? "Flying enemy" : "Walker enemy";
+            return `Spawning an enemy:
+- Type: ${type}
+- Behavior: Patrol
+- Damage on contact: Yes`;
+        }
+
+        function setBackground(input) {
+            if (input.includes("space")) {
+                return `Setting background:
+- Theme: Space
+- Stars and planets added`;
+            } else if (input.includes("jungle")) {
+                return `Setting background:
+- Theme: Jungle
+- Trees and vines added`;
+            } else {
+                return `Default background set. Say 'jungle' or 'space' to get a cool vibe!`;
+            }
+        }
+
+        function addCollectible(input) {
+            return `Adding collectibles:
+- Type: Coins
+- Value: 10 points each
+- Spread across map`;
+        }
+
+        function extractName(input) {
+            const nameMatch = input.match(/name\s+(\w+)/);
+            return nameMatch ? nameMatch[1] : "Hero";
+        }
+    </script>
+</body>
+</html>
